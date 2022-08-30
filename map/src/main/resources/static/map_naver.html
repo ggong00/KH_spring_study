@@ -1,0 +1,319 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+        <title>간단한 지도 표시하기</title>
+        <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=igjbcnj0cq&submodules=geocoder"></script>
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=50ab32a27673b6735b64570a9e8c8453&libraries=services,clusterer,drawing"></script>
+        <!--        <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=igjbcnj0cq"></script>-->
+        <script src="https://kit.fontawesome.com/7ee6b8223a.js" crossorigin="anonymous"></script>
+        <style>
+            .mk i{
+                font-size: 24px;
+                color: rgba(188, 16, 215, 0.82);
+            }
+            .my-location {
+                width: 20px;
+                height: 20px;
+                animation: impact 1.4s infinite;
+            }
+            .my-location i {
+                font-size: 32px;
+                color: rgb(16, 194, 49);
+            }
+            @keyframes impact {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(81, 194, 81, 0.37);
+                }
+                100% {
+                    box-shadow: 0px 0px 17px 14px rgb(78 210 78 / 25%)
+                }
+            }
+
+            .infowindow{
+                padding: 2px;
+                font-weight: bold;
+            }
+            #myPosition {
+                position: absolute;
+                top: 150px;left: 50px;
+                z-index: 100;
+                background-color: aliceblue;
+                border: 1px solid rgba(0, 0, 0, 0.326);
+                cursor: pointer;
+                padding: 6px;
+                border-radius: 8px;
+            }
+            #nav {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 48px;
+                background-color: black;
+                color: aliceblue;
+                height: 100px;
+            }
+            #keyword-wrap {
+                position: absolute;
+                top: 200px;
+                left: 50px;
+                border: 1px solid rgba(0, 0, 0, 0.326);
+                cursor: pointer;
+                padding: 6px;
+                border-radius: 8px;
+                z-index: 100;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="cotainer">
+            <div id="nav">나의 지도</div>
+            <div id="myPosition">내위치</div>
+            <div id="keyword-wrap">
+                <input type="text" id="keyword" value="공업탑">
+                <button id="btn">검색</button>
+            </div>
+            <div id="map" style="width:100%;height:400px;"></div>
+        </div>
+
+    <script>
+    const data = [
+        {
+            title:'울산남부경찰서',
+            tel:'052-1111-1111',
+            addr:'주소1',
+            lat:35.5358,
+            lng:129.3102
+        },
+        {
+            title:'태화강역',
+            tel:'052-1551-1111',
+            addr:'주소2',
+            lat:35.5396,
+            lng:129.3537
+        },
+        {
+            title:'학성공원',
+            tel:'052-1441-1111',
+            addr:'주소3',
+            lat:35.5547,
+            lng:129.3393
+        },
+        {
+            title:'공업탑',
+            tel:'052-1311-1111',
+            addr:'주소4',
+            lat:35.5355,
+            lng:129.308
+        }
+    ]
+
+    const mapOptions = {
+        center: new naver.maps.LatLng(data[0].lat,data[0].lng),
+        zoom: 18
+    };
+
+    const map = new naver.maps.Map('map', mapOptions);
+
+    //마커
+    const markers = data.map((ele,idx,arry) => {
+                        return new naver.maps.Marker({
+                                    position: new naver.maps.LatLng(ele.lat, ele.lng),
+                                    map: map,
+                                    icon: {
+                                        content : `<div class="mk"><i class="fa-solid fa-arrow-up-from-water-pump"></i></div>`
+                                    }
+
+
+                                });
+                    });
+
+    //인포창 렌더링
+    const rederInfowindow = info => {
+        const html =
+        `
+            <div class = 'infowindow'>
+                <p class='infowindow_title'>${info.title}</p>
+                <p class='infowindow_tel'>${info.tel}</p>
+                <p class='infowindow_addr'>${info.addr}</p>
+            </div>
+        `
+        return html;
+    }
+
+
+    //인포창
+    const infowindows = data.map((ele,idx,arr) => {
+        return new naver.maps.InfoWindow({
+            content: rederInfowindow(ele)
+        });
+    });
+
+    console.log(infowindows[0]);
+
+    //마커 클릭시 인포창 띄우기
+    markers.forEach((ele,idx,arr) => {
+        naver.maps.Event.addListener(ele,'click',()=>{
+
+            //infowindows가 있으면 닫고 없으면 infowindows보여주기
+            if(infowindows[idx].getMap()) {
+                infowindows[idx].close();
+            } else {
+                infowindows[idx].open(map,ele);
+            }
+        });
+    });
+
+    //지도 클릭시 인포창 닫기
+    naver.maps.Event.addListener(map,'click',() => {
+        markers.forEach((ele,idx) => {
+            infowindows[idx].close();
+        })
+    })
+
+    //내위치
+    naver.maps.Event.addDOMListener(
+        document.getElementById('myPosition'),
+        'click',
+        () => {
+            //브라우저 실행위치
+            const myloc = window.navigator.geolocation;
+
+            // 성공시
+            const seccesLog = (loc)=> {
+                const [lat,lng] = [loc.coords.latitude,loc.coords.longitude];
+                const whereAmI = new naver.maps.LatLng(lat, lng);
+                const myPosition =
+                    new naver.maps.Marker({
+                        position: new naver.maps.LatLng(lat, lng),
+                        map: map,
+                        icon: {
+                            content : `<div class="my-location"><i class="fa-solid fa-arrow-up-from-water-pump"></i></div>`
+                        }
+                    });
+
+                // 위치 이동
+                map.setCenter(whereAmI);
+                map.setZoom(18,false);
+
+                // map.morph(
+                //     whereAmI,
+                //     14,
+                //     {
+                //         duration : 1000,
+                //         easing : "easeOutCubic"
+                //     }
+                //     );
+
+            }
+
+            // 실패시
+            const failLog = (err) => {
+                console.error(err.code,err.message);
+            }
+
+            if(myloc) {
+                myloc.getCurrentPosition(seccesLog,failLog);
+            } else {
+                alert('x')
+            }
+
+        }
+    );
+
+    console.log(naver.maps.Service);
+
+    // 키워드로 검색된 마커
+    const markerOfKeyword = [];
+    // 장소 검색 객체를 생성합니다
+    const ps = new kakao.maps.services.Places();
+    // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
+    const infowindow = new naver.maps.InfoWindow({ zIndex: 1 });
+
+    const $btnSearch = document.querySelector('#btn');
+    const input = document.getElementById('keyword');
+
+    const btnSearch_h = (e) => {
+
+        // consol.log(e.target.type);
+
+        // 기존에 검색되어 생성된 마커들 지도에서 제거
+        markerOfKeyword.forEach(ele => {
+            ele.setMap(null);
+        })
+
+        // 키워드로 장소를 검색합니다
+        ps.keywordSearch(input.value, placesSearchCB);
+    }
+
+    const keydown_h = (e) => {
+        console.log(e.key)
+        if(e.key !== 'Enter') return;
+
+        // 기존에 검색되어 생성된 마커들 지도에서 제거
+        markerOfKeyword.forEach(ele => {
+            ele.setMap(null);
+        })
+
+        // 키워드로 장소를 검색합니다
+        ps.keywordSearch(input.value, placesSearchCB);
+    }
+
+    //키워드검색
+    $btnSearch.addEventListener('click', btnSearch_h);
+    input.addEventListener('keydown', keydown_h);
+
+    // 키워드 검색 완료 시 호출되는 콜백함수 입니다
+    function placesSearchCB(data, status, pagination) {
+        console.log(data, status, pagination);
+        if (status === kakao.maps.services.Status.OK) {
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+            // LatLngBounds 객체에 좌표를 추가합니다
+            const bounds = new naver.maps.LatLngBounds();
+
+            for (let i = 0; i < data.length; i++) {
+                displayMarker(data[i]);
+                bounds.extend(new naver.maps.LatLng(data[i].y, data[i].x));
+            }
+
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+            map.panToBounds(bounds);
+        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+            alert('검색 결과가 존재하지 않습니다.');
+            return;
+        } else if (status === kakao.maps.services.Status.ERROR) {
+            alert('검색 결과 중 오류가 발생했습니다.');
+            return;
+        }
+    }
+
+    // 지도에 마커를 표시하는 함수입니다
+    function displayMarker(place) {
+        // 마커를 생성하고 지도에 표시합니다
+        const marker = new naver.maps.Marker({
+            map: map,
+            position: new naver.maps.LatLng(place.y, place.x),
+            icon: {
+                content: `<div class="mk"><i class="fa-solid fa-arrow-up-from-water-pump"></i></div>`
+            }
+        });
+
+        // 마커에 클릭이벤트를 등록합니다
+        naver.maps.Event.addListener(marker, 'click', function () {
+            // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+            infowindow.setContent(
+                `<div style='padding:5px;font-size:12px;'>${place.place_name}</div>`
+            );
+            infowindow.open(map, marker);
+        });
+
+
+        markerOfKeyword.push(marker);
+    }
+
+    /* Javascript 샘플 코드 */
+    </script>
+    </body>
+    </html>

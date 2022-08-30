@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button>클릭!</button>
+
+    <table>
+        <caption>공공데이터 목록</caption>
+        <thead>
+            <th>항목1</th>
+            <th>항목2</th>
+            <th>항목3</th>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+
+    <script>
+
+        document.querySelector('button').addEventListener('click', () => {
+
+            const xhr = new XMLHttpRequest();
+            const method = 'GET';
+            const url = 'http://localhost:9080/api/pub/json';
+            xhr.open(method,url); //request 요청 초기화
+            xhr.send();         //request 요청 전송
+
+            const async_h = e => {
+                if(xhr.readyState === XMLHttpRequest.DONE) {
+                    const status = xhr.status;
+                    if(status === 0 || (status >= 200 && status < 400)) {
+                        const data = JSON.parse(e.target.responseText);
+
+                        if(data.header.resultCode == '00') {
+                            const result = 
+                            data.body.items.map(ele => {
+                                const html =
+                                `<tr>
+                                    <td>${ele.faciNm}</td>
+                                    <td>${ele.faciPointY}</td>
+                                    <td>${ele.faciPointX}</td>
+                                </tr>    
+                                `
+                                return html;
+                            }).join('');
+
+                            document.querySelector('tbody').innerHTML = result;
+                        }
+                    } else {
+                        console.log('실패');
+                    }
+                }
+            }
+
+            xhr.addEventListener('readystatechange',async_h);
+
+
+        })
+
+
+
+
+
+    </script>
+</body>
+</html>

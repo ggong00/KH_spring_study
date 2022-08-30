@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <table>
+        <thead>
+            <th>아이디</th>
+            <th>이메일</th>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${user.username}">aa</td>
+            <td th:text="${user.email}">bb@bb</td>
+        </tr>
+        </tbody>
+    </table>
+    <p>시설 검색</p>
+    <form action="/search" method="post">
+        <label>운동분류</label><input type="text" name="faciNm">
+        <input type="submit" value="입력">
+    </form>
+
+    <p>api 시설 검색</p>
+    <form action="/search/api" method="post">
+        <label>운동분류</label><input type="text" name="faciNm">
+        <input type="submit" value="입력">
+    </form>
+
+</body>
+</html>

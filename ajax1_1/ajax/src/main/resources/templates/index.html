@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<ul>
+<!--    <li><a href="/items">상품관리</a></li>-->
+    <li><a href="#" id="menu1">상품관리</a></li>
+    <li><a href="#">menu2</a></li>
+    <li><a href="#">menu3</a></li>
+</ul>
+
+<script>
+    document.getElementById('menu1').addEventListener('click', e => {
+        e.preventDefault();
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', '/items'); //http요청 초기화
+        xhr.setRequestHeader('Content-Type','text/html');
+        xhr.send();             //서버에 http 요청 메세지 전송
+
+        const received_h = (e) => {
+
+            if (xhr.status == 200) {
+                document.documentElement.innerHTML = xhr.responseText;
+            } else {
+                console.log('통신실패')
+            }
+        }
+
+        xhr.addEventListener('load', received_h);
+
+
+    })
+
+</script>
+
+
+</body>
+</html>

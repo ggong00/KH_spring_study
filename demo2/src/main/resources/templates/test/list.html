@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<table>
+    <thead>
+    <th>업종분류</th>
+    <th>시설명</th>
+    <th>번호</th>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${list}">
+        <td th:text="${item.ftypeNm}"></td>
+        <td th:text="${item.faciNm}"></td>
+        <td th:text="${item.faciTel}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

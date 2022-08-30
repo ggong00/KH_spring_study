@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Title</title>
+  <script src="/js/create_elememt.js"></script>
+</head>
+
+<body>
+  <form id="productForm" action="/api/items" method="post">
+    <p>상품명 <input type="text" id="pname" name="name"></p>
+    <p>브랜드 <input type="text" id="brand" name="brand"></p>
+    <p>상품설명 <textarea id="desc" cols="10" rows="3" name="desc"></textarea></p>
+    <p>가격 <input type="text" id="price" name="price"></p>
+    <div><button id="createBtn" type="submit">등록</button></div>
+  </form>
+
+  <div><button id="listBtn">목록</button></div>
+  <div>
+    <input type="text" id="detailItemId">
+
+
+
+    <button id="detailBtn">조회</button>
+  </div>
+  <!-- <div><input type="text" id="delItemId"><button id="delBtn">삭제</button></div> -->
+
+  <div>상품목록</div>
+  <div id="itemList">
+    <table>
+      <thead>
+        <tr>
+          <td>아이디</td>
+          <td>이름</td>
+          <td>브랜드</td>
+          <td>설명</td>
+          <td>가격</td>
+        </tr>
+      </thead>
+      <tbody id="item">
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+
+    </table>
+
+
+  </div>
+
+  <script>
+
+   const $productForm = document.getElementById('productForm');
+   const $parentElement = document.getElementById('item');
+
+   //상품등록
+   const addProduct = result => {
+     if (result.rtcd == '00') {
+       const product = result.data;
+
+       const $tr =
+               makeElements('tr',null,
+                       makeElements('td',null,product.id.toString()),
+                       makeElements('td',null,product.name),
+                       makeElements('td',null,product.brand),
+                       makeElements('td',null,product.desc),
+                       makeElements('td',null,product.price.toString())
+       );
+
+       $parentElement.appendChild($tr);
+
+     }else {
+     }
+
+   }
+
+   $productForm.addEventListener('submit', e => {
+     e.preventDefault();
+
+     const xhr = new XMLHttpRequest();
+     const {method,action} = $productForm;
+     const jsonText = JSON.stringify(Object.fromEntries(new FormData($productForm)));
+     console.log(jsonText);
+
+     xhr.open(method,action);
+     xhr.setRequestHeader('content-type', 'application/json');
+     xhr.send(jsonText);
+     xhr.addEventListener('load',(e) => {
+       console.log(xhr.status)
+       if (xhr.status == '200') {
+         addProduct(JSON.parse(xhr.responseText));
+       } else {
+         console.log(xhr.status, xhr.statusText);
+       }
+
+     });
+   });
+
+   const listProduct = result => {
+     if (result.rtcd == '00') {
+
+     }
+   }
+
+   //상품전체 목록
+   // listBtn.addEventListener('click',() => {
+   //   console.log('클릭')
+   //
+   //   const xhr = new XMLHttpRequest();
+   //   xhr.open('GET','/api/items');
+   //   xhr.send(null);
+   //   xhr.addEventListener('load', () => {
+   //     if (xhr.status == '200') {
+   //       console.log(xhr.responseText);
+   //       listProduct(JSON.parse(xhr.responseText));
+   //     }
+   //   })
+   //
+   // });
+
+  </script>
+
+
+</body>
+</html>
