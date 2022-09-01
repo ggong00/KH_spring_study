@@ -2,15 +2,50 @@ package com.kh.myapp3.domain.dao;
 
 import com.kh.myapp3.domain.Product;
 
+import java.util.List;
+
 public interface ProductDAO {
-    //등록
-    Integer save(Product product);
+    /**
+     * 등록
+     * @param product 상품정보
+     * @return 등록된 상품
+     */
+    Product save(Product product);
 
-    //수정
+    /**
+     * 조회
+     * @param productId 상품아이디
+     * @return 상품아이디
+     */
+    Product findById(Long productId);
 
-    //조회
+    /**
+     * 수정
+     * @param product 상품정보
+     */
+    void update(Product product);
 
-    //삭제
+    /**
+     * 삭제
+     * @param productId 상품아이디
+     */
+    void delete(Long productId);
 
-    //목록
+    /**
+     * 전체조회
+     * @return 상품전체
+     */
+    List<Product> findALl();
+
+    /**
+     * 전체삭제
+     */
+    void deleteAll();
+
+    /**
+     * 상품아이디생성
+     *
+     * @return
+     */
+    Long generatePid();
 }

@@ -21,23 +21,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>컴퓨터</td>
-                    <td>3</td>
-                    <td>100000</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>모니터</td>
-                    <td>3</td>
-                    <td>100000</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>컴퓨터</td>
-                    <td>3</td>
-                    <td>100000</td>
+                <tr th:each="product : ${list}">
+                    <td th:text="${product.productId}">1</td>
+                    <td>
+                        <a href="/"
+                           th:href="@{products/{pid}/detail(pid = ${product.productId})}"
+                           th:text="${product.pname}"
+                        >컴퓨터</a>
+                    </td>
+                    <td th:text="${product.quantity}">3</td>
+                    <td th:text="${product.price}">100000</td>
                 </tr>
             </tbody>
         </table>
@@ -46,7 +39,7 @@
 
         <script>
             addBtn.addEventListener('click',e => {
-                location.href = '/product';
+                location.href = '/products/add';
             });
         </script>
     </div>

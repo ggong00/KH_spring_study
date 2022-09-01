@@ -12,10 +12,10 @@
         <h3>상품상세</h3>
         <form method="post" action="">
             <div>
-                <div><label for="">상품아이디</label><input type="text" disabled></div>
-                <div><label for="">상품명</label><input type="text"></div>
-                <div><label for="">수량</label><input type="text"></div>
-                <div><label for="">가격</label><input type="text"></div>
+                <div><label for="">상품아이디</label><input type="text" name="productId" th:value="${editForm.productId}" disabled></div>
+                <div><label for="">상품명</label><input type="text" name="pname" th:value="${editForm.pname}"></div>
+                <div><label for="">수량</label><input type="text" name="quantity" th:value="${editForm.quantity}"></div>
+                <div><label for="">가격</label><input type="text" name="price" th:value="${editForm.price}"></div>
                 <button type="button" id="cancelBtn">취소</button>
                 <button type="submit" id="editBtn">저장</button>
             </div>
@@ -23,13 +23,16 @@
     </div>
 
     <script>
+        const pid = document.querySelector('input[name=productId]').value;
+
         editBtn.addEventListener('click', e=> {
-            location.href = `/product/{}`
+            const url = `/products/${pid}/edit`;
+            location.href = url;
         })
         cancelBtn.addEventListener('click', e=> {
-
+            const url = `/products/${pid}/detail`;
+            location.href = url;
         })
-
     </script>
 </body>
 </html>

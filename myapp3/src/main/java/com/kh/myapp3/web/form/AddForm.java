@@ -7,8 +7,8 @@ import lombok.ToString;
 
 @Getter @Setter @ToString
 @AllArgsConstructor
-public class SaveForm {
+public class AddForm {
     private String pname;
-    private Integer quantity;
-    private Integer price;
+    private Long quantity;
+    private Long price;
 }

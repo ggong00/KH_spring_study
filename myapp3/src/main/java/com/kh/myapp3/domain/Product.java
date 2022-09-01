@@ -1,11 +1,17 @@
 package com.kh.myapp3.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product {
-    private Integer productId;  //상품번호
+    private Long productId;  //상품번호
     private String pname;       //상품이름
-    private Integer quantity;   //수량
-    private Integer price;      //가격
+    private Long quantity;   //수량
+    private Long price;      //가격
+
+
 }
