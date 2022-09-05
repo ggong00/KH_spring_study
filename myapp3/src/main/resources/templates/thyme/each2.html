@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$Title$</title>
+</head>
+<body>
+    <th:block th:each="conut,status: ${#numbers.sequence(1,10)}">
+        <p>
+            Hello
+            <span th:text="${status.index}"></span>
+            <span th:text="${status.count}"></span>
+            <span th:text="${status.first}"></span>
+            <span th:text="${status.last}"></span>
+            <span th:text="${status.current}"></span>
+            <span th:text="${status.odd}"></span>
+            <span th:text="${status.even}"></span>
+        </p>
+    </th:block>
+
+</body>
+</html>

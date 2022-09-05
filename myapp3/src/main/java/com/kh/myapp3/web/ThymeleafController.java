@@ -44,6 +44,23 @@ public class ThymeleafController {
         return "thyme/text";
     }
 
+    @GetMapping("/each")
+    public String each(Model model) {
+
+        List<Person> personList = new ArrayList<>();
+        personList.add(new Person("홍길동", 20));
+        personList.add(new Person("홍길서", 30));
+        personList.add(new Person("홍길남", 40));
+        model.addAttribute("personList", personList);
+        return "thyme/each";
+    }
+
+    @GetMapping("/each2")
+    public String each2() {
+
+        return "thyme/each2";
+    }
+
     @AllArgsConstructor
     @Data
     static class Person {

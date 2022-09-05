@@ -1,15 +1,14 @@
-package com.kh.myapp3.domain.svc;
+package com.kh.myapp3.domain.product.dao;
 
-import com.kh.myapp3.domain.Product;
+import com.kh.myapp3.domain.product.Product;
 
 import java.util.List;
 
-public interface ProductSVC {
-
+public interface ProductDAO {
     /**
-     * 상품등록
+     * 등록
      * @param product 상품정보
-     * @return  상품아이디
+     * @return 등록된 상품
      */
     Product save(Product product);
 

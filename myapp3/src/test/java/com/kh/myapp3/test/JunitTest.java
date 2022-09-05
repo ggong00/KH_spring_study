@@ -1,10 +1,8 @@
 package com.kh.myapp3.test;
 
-import com.kh.myapp3.domain.Product;
-import com.kh.myapp3.domain.dao.ProductDAO;
-import com.kh.myapp3.domain.svc.ProductSVC;
+import com.kh.myapp3.domain.product.Product;
+import com.kh.myapp3.domain.product.dao.ProductDAO;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

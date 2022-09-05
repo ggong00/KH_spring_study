@@ -1,11 +1,11 @@
-package com.kh.myapp3.web.form;
+package com.kh.myapp3.web.form.product;
 
 import lombok.*;
 
 @Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class EditForm {
+public class ItemForm {
     private Long productId;
     private String pname;
     private Long quantity;
