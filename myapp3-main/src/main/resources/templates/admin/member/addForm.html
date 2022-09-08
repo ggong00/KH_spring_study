@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원등록</title>
+  <style>
+    .errmsg{
+      font-size: 0.8em;
+      font-weight: bold;
+      color: red;
+    }
+    .fieldError {
+      border: 1px solid red;
+      color: red;
+    }
+    .clear {
+      border: 1px solid green;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+<h3 th:text="#{title.member.add}">회원등록</h3>
+<hr>
+<form id="form" action="" method="post" th:object="${form}">
+  <div th:if="${#fields.hasGlobalErrors()}">
+    <p th:each="error : ${#fields.globalErrors()}" th:text="${error}" th:class="errmsg"></p>
+  </div>
+  <div>
+    <label for="" th:text="#{label.member.email}">이메일</label>
+    <input type="text" th:field="*{email}" th:class="${#fields.hasErrors('email')} ? fieldError : clear">
+<!--    <span class="errmsg"></span>-->
+<!--    <span th:errors="*{email}" th:errorclass="errmsg"></span>-->
+    <ul th:if="${#fields.hasErrors('email')}">
+      <li th:class="errmsg" th:each="err : ${#fields.errors('email')}" th:text="|${errStat.count}.${err}|"></li>
+    </ul>
+  </div>
+
+  <div>
+    <label for="" th:text="#{label.member.pw}">비밀번호</label>
+    <input type="text" th:field="*{pw}">
+    <span th:errors="*{pw}" th:errorclass="errmsg"></span>
+  </div>
+
+  <div>
+    <label for="" th:text="#{label.member.nickname}">별칭</label>
+    <input type="text" th:field="*{nickname}">
+    <span th:errors="*{nickname}" th:errorclass="errmsg"></span>
+  </div>
+  <div>
+    <button type="submit" th:text="#{btn.add}" id="addBtn">등록</button>
+    <button type="reset" th:text="#{btn.cancel}">취소</button>
+    <button type="button" th:onclick="|location.href='@{/admin/members/all}'|" th:text="#{btn.list}">목록</button>
+  </div>
+</form>
+<script>
+  // addBtn.addEventListener('click',e => {
+  //   e.preventDefault();
+  //   if(email.value.trim().length == 0) {
+  //     email.nextElementSibling.textContent = '이메일 입력은 필수입니다';
+  //     email.focus();
+  //     return;
+  //   }
+  //   form.submit();  //요청메세지 생성
+  // })
+</script>
+</body>
+</html>
