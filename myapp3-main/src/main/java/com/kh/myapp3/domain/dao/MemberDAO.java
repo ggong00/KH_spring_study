@@ -3,6 +3,8 @@ package com.kh.myapp3.domain.dao;
 
 import com.kh.myapp3.domain.Member;
 
+import java.util.Optional;
+
 public interface MemberDAO {
 
   /**
@@ -41,4 +43,11 @@ public interface MemberDAO {
    */
   Long generateMemberId();
 
+  /**
+   * 회원 유무 체크
+   * @param email
+   * @param pw
+   * @return
+   */
+  Optional<Member> login(String email, String pw);
 }

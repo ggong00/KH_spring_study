@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: layout(~{::title}, ~{::div#container}, ~{::style}, ~{::script}, _ )}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>로그인전</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        table {
+            border:1px solid;
+            border-collapse: collapse;
+        }
+        td,th {
+            border:1px solid;
+            padding:5px;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="container">
+        로그인전 화면
+        <ul>
+            <li><a th:href="@{/login}">로그인</a></li>
+            <li><a th:href="@{/admin/members/all}">회원목록(회원)</a></li>
+            <li><a th:href="@{/products}">상품목록(비회원)</a></li>
+            <li><a th:href="@{/logout}">로그아웃</a></li>
+        </ul>
+    </div>
+
+    <script></script>
+</body>
+</html>

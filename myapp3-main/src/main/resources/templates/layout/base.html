@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html th:fragment="layout (title, content, style, script,footer)"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:replace="${title}">Layout Title</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="">
+  <link rel="stylesheet" href="">
+
+  <script></script>
+  <script></script>
+
+  <th:block th:replace="${style}"></th:block>
+</head>
+
+<body>
+  <div th:replace="${content}">
+    <p>Layout content</p>
+  </div>
+
+  <footer th:replace="${footer}">
+    Layout footer
+  </footer>
+
+  <th:block th:replace="${script}"></th:block>
+</body>
+</html>

@@ -6,8 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>초기페이지</title>
+  <style>
+    *{outline: 1px solid red}
+  </style>
 </head>
 <body>
-  Hello World~!
+  <div th:replace="~{layout/common :: header3(~{::ptag})}">
+    <p th:fragment="ptag">p태그</p>
+  </div>
 </body>
 </html>

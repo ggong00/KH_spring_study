@@ -8,12 +8,15 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Slf4j
 @Repository
 @RequiredArgsConstructor
 public class MemberDAOImpl implements MemberDAO{
 
   private final JdbcTemplate jt;
+  private Object select;
 
   /**
    * 가입
@@ -41,6 +44,34 @@ public class MemberDAOImpl implements MemberDAO{
     String sql = "select member_member_id_seq.nextval from dual ";
     Long memberId = jt.queryForObject(sql, Long.class);
     return memberId;
+  }
+
+  /**
+   * 회원 유무 체크
+   *
+   * @param email
+   * @param pw
+   * @return
+   */
+  @Override
+  public Optional<Member> login(String email, String pw) {
+    StringBuffer sql = new StringBuffer();
+    sql.append(" select * from member ");
+    sql.append("       where email = ? ");
+    sql.append("         and pw = ? ");
+
+    try {
+      Member member = jt.queryForObject(sql.toString(),
+              new BeanPropertyRowMapper<>(Member.class),
+              email,
+              pw
+      );
+      return Optional.of(member);
+
+    } catch (DataAccessException e) {
+      e.printStackTrace();
+      return Optional.empty();
+    }
   }
 
   /**

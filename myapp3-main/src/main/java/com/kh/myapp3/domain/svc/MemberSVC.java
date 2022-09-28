@@ -2,6 +2,8 @@ package com.kh.myapp3.domain.svc;
 
 import com.kh.myapp3.domain.Member;
 
+import java.util.Optional;
+
 public interface MemberSVC {
   /**
    * 가입
@@ -32,5 +34,13 @@ public interface MemberSVC {
    * @return 삭제건수
    */
   int del(Long memberId, String pw);
+
+  /**
+   * 회원 유무 체크
+   * @param email
+   * @param pw
+   * @return
+   */
+  Optional<Member> login(String email, String pw);
 
 }

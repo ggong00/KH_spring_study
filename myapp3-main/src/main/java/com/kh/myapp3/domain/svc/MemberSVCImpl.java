@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -66,6 +68,18 @@ public class MemberSVCImpl implements MemberSVC{
     int cnt = memberDAO.del(memberId, pw);
     log.info("삭제건수={}", cnt);
     return cnt;
+  }
+
+  /**
+   * 회원 유무 체크
+   *
+   * @param email
+   * @param pw
+   * @return
+   */
+  @Override
+  public Optional<Member> login(String email, String pw) {
+    return memberDAO.login(email,pw);
   }
 
 }
