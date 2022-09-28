@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품수정</title>
+    <style>
+        label {
+            display: block;
+        }
+        .error-class {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <form action method="post" th:object="${product}">
+        <div th:if="${#fields.hasGlobalErrors()}" th:each="globalError : ${#fields.globalErrors()}">
+            <div th:text="${globalError}" th:class="error-class"></div>
+        </div>
+        <label>
+            이름
+            <input th:field="*{pname}"></label>
+        <label>
+            가격
+            <input th:field="*{price}"></label>
+        <div th:errors="*{price}" th:errorclass="error-class"></div>
+        <label>
+            수량
+            <input th:field="*{count}"></label>
+        <div th:errors="*{count}" th:errorclass="error-class"></div>
+        <button id="bntEdit">수정</button>
+        <button id="bntList">취소</button>
+    </form>
+    <script th:inline="javascript">
+        const product = [[${product}]]
+        bntList.addEventListener('click',(e) => {
+            e.preventDefault();
+            location.href = `/products/${product.productId}`;
+        })
+    </script>
+</body>
+</html>

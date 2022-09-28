@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>삭제</title>
+</head>
+
+<body>
+    <h3>삭제하시겠습니까?</h3>
+    <form th:action="@{/products/{productId}/del(productId=${productId})}" method="post">
+        <p th:text="|상품아이디 ${productId}|"></p>
+        <button id="btnOk">확인</button>
+        <button id="btnCancel">취소</button>
+    </form>
+
+    <script th:inline="javascript">
+        const productId = [[${productId}]]
+
+        btnCancel.addEventListener('click', e => {
+            e.preventDefault();
+            location.href = `/products/${productId}`;
+        });
+
+    </script>
+</body>
+</html>

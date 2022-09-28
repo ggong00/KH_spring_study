@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품관리-CSR</title>
+  <style>
+    .fieldError {
+      color: red;
+      font-weight: bold;
+      font-size: 0.8em;
+    }
+    #globalError {
+      color: red;
+      font-weight: bold;
+      font-size: 0.8em;
+    }
+    #productList .wrap .header,
+    #productList .wrap .body
+    {
+      display: grid;
+      grid-template-columns: 100px 200px 100px 100px;
+      grid-auto-rows: 0.1fr;
+    }
+    #productList .wrap .header {
+      font-weight: bold;
+    }
+
+    #productList .wrap .header div,
+    #productList .wrap .body div {
+      border: 1px solid gray;
+    }
+
+
+    .none {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h3>상품관리-CSR</h3>
+  <hr>
+  <!-- 상품등록 -->
+  <div>
+    <form action="">
+      <div><span id="globalError"></span></div>
+      <div>
+        <label for="">상품아이디</label>
+        <input type="text" id="productId">
+        <button type="button" id="findId">조회</button>
+        <span id="productIdErr" class="fieldError"></span>
+      </div>
+      <div><label for="">상품명</label><input type="text" id="pname"></div>
+      <div><span class="fieldError" id="pnameError"></span></div>
+      <div><label for="">수량</label><input type="text" id="quantity"></div>
+      <div><span class="fieldError" id="quantityError"></span></div>
+      <div><label for="">단가</label><input type="text" id="price"></div>
+      <div><span class="fieldError" id="priceError"></span></div>
+      <!-- 등록상태 -->
+      <div id="" class="btngrp add">
+        <button type='button' id="addBtn">등록</button>
+      </div>
+      <!-- 조회상태 -->
+      <div id="" class="btngrp read none">
+        <button type='button' id="toAddBtn">신규</button>
+        <button type='button' id="modifyBtn">수정</button>
+        <button type='button' id="delBtn">삭제</button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- 상품목록 -->
+  <div id="productList">
+    <h3>상품목록</h3>
+    <div><button id="listBtn">목록</button></div>
+    <div class="wrap">
+      <div class="header">
+        <div>Id</div><div>상품명</div><div>수량</div><div>가격</div>
+      </div>
+      <div class="body">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    //등록-add, 조회-findById, 수정-modify
+    const SCREEN_STATUS = Object.freeze({
+      ADD : Symbol('add'),
+      READ : Symbol('findById'),
+    });
+
+    let screenStatus = '';
+
+    //화면상태 체크
+    function changeMode(mode) {
+      if(screenStatus == mode) return;
+      screenStatus = mode;
+      switch (screenStatus) {
+        case SCREEN_STATUS.ADD:
+          document.querySelector('.btngrp.add').classList.remove('none');
+          document.querySelector('.btngrp.read').classList.add('none');
+          break;
+        case SCREEN_STATUS.READ:
+          document.querySelector('.btngrp.read').classList.remove('none');
+          document.querySelector('.btngrp.add').classList.add('none');
+          break;
+      }
+    }
+
+    changeMode(SCREEN_STATUS.ADD);
+
+    //등록 모드 이동
+    toAddBtn.addEventListener('click',() => {
+      changeMode(SCREEN_STATUS.ADD);
+      clearForm();
+    })
+
+    //등록 클릭시
+    addBtn.addEventListener('click',e=>{
+      if (!validChk()) return;
+      add(getInputData());
+    });
+
+    //검색 클릭
+    findId.addEventListener('click', () => {
+      if(productId.value.trim().length == 0) {
+        productIdErr.textContent = '조회할 상품아이디를 입력하세요';
+        productId.focus();
+        return;
+      }
+      findById(productId.value);
+    });
+
+    //목록 클릭
+    listBtn.addEventListener('click',() => {
+      findAll();
+    })
+
+    //수정 클릭
+    modifyBtn.addEventListener('click',() => {
+      if(!validChk()) return
+      update(productId.value,getInputData());
+    })
+
+    //삭제 클릭
+    delBtn.addEventListener('click',() => {
+      if(!confirm('삭제하시겠습니까?')) return
+      const id = productId.value;
+      deleteById(id);
+    })
+
+
+    //등록
+    function add(product){
+      const url = 'http://localhost:9090/api/products';
+      fetch( url,{            //url
+        method:'POST',        //http method
+        headers:{             //http header
+          'Content-Type':'application/json',
+          'Accept':'application/json'
+        },
+        body: JSON.stringify(product)   //http body      // js객체 => json포맷의 문자열
+      }).then(res=>res.json())
+        .then(data=>{
+          findAll()
+          clearForm()
+        })
+        .catch(err=>console.log(err));
+    }
+
+    //조회
+    function findById(id){
+      const url = `http://localhost:9090/api/products/${id}`;
+      fetch( url,{            //url
+        method:'GET',        //http method
+        headers:{             //http header
+          'Accept':'application/json'
+        },
+      }).then(res=>res.json())
+        .then(res=>{
+          if (res.header.rtcd == '00') {
+            productId.value = res.data.productId;
+            pname.value = res.data.pname;
+            quantity.value = res.data.quantity;
+            price.value = res.data.price;
+            clearErrorField();
+            changeMode(SCREEN_STATUS.READ);
+          } else {
+            console.log(res)
+            throw new Error(res.header.rtcd + res.header.rtmsg);
+          }
+        })
+        .catch(err => {
+          productIdErr.textContent = err
+          productId.value = '';
+        });
+    }
+
+    //수정
+    function update(id,product){
+      const url = `http://localhost:9090/api/products/${id}`;
+      fetch( url,{            //url
+        method:'PATCH',        //http method
+        headers:{             //http header
+          'Content-Type':'application/json',
+          'Accept':'application/json'
+        },
+        body: JSON.stringify(product)  //http body
+
+      }).then(res=>res.json())
+        .then(data=>{
+          findAll();
+        })
+        .catch(err=>console.log(err));
+    }
+
+    //삭제
+    function deleteById(id){
+      const url = `http://localhost:9090/api/products/${id}`;
+      fetch( url,{            //url
+        method:'DELETE',        //http method
+        headers:{             //http header
+          'Accept':'application/json'
+        },
+      }).then(res=>res.json())
+        .then(data=>{
+          findAll();
+          clearForm();
+        })
+        .catch(err=>console.log(err));
+    }
+
+    //목록
+    function findAll(){
+      const url = `http://localhost:9090/api/products`;
+      fetch( url,{            //url
+        method:'GET',        //http method
+        headers:{             //http header
+          'Accept':'application/json'
+        }
+      }).then(res=>res.json())
+        .then(res=>{
+          console.log(res);
+          if (res.header.rtcd == '00') {
+            result =
+            res.data.map(product => {
+              return  (`<div>${product.productId}</div>
+                        <div><a href="#" onclick="findById(${product.productId})">${product.pname}</a></div>
+                        <div>${product.quantity}</div>
+                        <div>${product.price}</div>`);
+            }).join('');
+           document.querySelector('#productList .wrap .body').innerHTML = result
+          }
+        })
+        .catch(err=>console.log(err));
+    }
+
+    function getInputData() {
+      return  {
+        'pname':pname.value,
+        'quantity':quantity.value,
+        'price':price.value
+      };
+    }
+
+    function clearErrorField() {
+      [...document.querySelectorAll('.fieldError')].forEach(ele => ele.textContent = '');
+    }
+
+    function clearForm() {
+      productId.vale = '';
+      pname.value = '';
+      quantity.value = '';
+      price.value = '';
+    }
+
+    function validChk() {
+      //데이터 검증(유효성 체크)
+      if (!pname.value.trim()) {
+        pnameError.textContent = '필수 필드입니다.'
+        return;
+      } else {
+        pnameError.textContent = ''
+      }
+      if (!quantity.value.trim()) {
+        quantityError.textContent = '필수 필드입니다.'
+        return;
+      } else {
+        quantityError.textContent = ''
+      }
+
+      if (isNaN(quantity.value) || quantity.value < 0) {
+        quantityError.textContent = '양수값 이어야합니다.';
+        return;
+      } else {
+        quantityError.textContent = '';
+      }
+
+      if (quantity.value > 100) {
+        quantityError.textContent = '100개를 초과할수 없습니다.';
+        return;
+      } else {
+        quantityError.textContent = '';
+      }
+
+      if (!price.value.trim()) {
+        priceError.textContent = '필수 필드입니다.';
+        return;
+      } {
+        priceError.textContent = ''
+      }
+
+      if (isNaN(price.value) || price.value < 0) {
+        priceError.textContent = '양수값 이어야합니다.';
+        return;
+      } else {
+        priceError.textContent = '';
+      }
+
+      //총액이 1000만원을 초과할수 없음
+      if (quantity.value * price.value > 10000000) {
+        globalError.textContent = '총액이 1000만원을 초과할수 없습니다.';
+        return;
+      } else {
+        globalError.textContent = '';
+      }
+
+      return true;
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상세화면</title>
+    <style>
+        label {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <form method="get" th:object="${product}">
+        <label><input th:field="*{productId}" disabled></label>
+        <label><input th:field="*{pname}" disabled></label>
+        <label><input th:field="*{price}" disabled></label>
+        <label><input th:field="*{count}" disabled></label>
+        <button id="bntEdit">수정</button>
+        <button id="bntList">목록</button>
+        <button id="bntDel">삭제</button>
+    </form>
+
+    <script th:inline="javascript">
+        const product = [[${product}]];
+        bntEdit.addEventListener('click', e => {
+            e.preventDefault()
+            location.href = `/products/${product.productId}/edit`;
+        })
+
+        bntList.addEventListener('click',e => {
+            e.preventDefault()
+            location.href = `/products`;
+        })
+        bntDel.addEventListener('click', e=> {
+            e.preventDefault();
+            location.href = `/products/${product.productId}/del`;
+        })
+    </script>
+
+</body>
+</html>
